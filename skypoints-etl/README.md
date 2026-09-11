@@ -82,7 +82,7 @@ The local demo parses one row per redemption. The production Snowflake pattern s
 
 ## Run locally
 
-From the `skypoints-etl-revised` directory:
+From the `skypoints-etl` directory:
 
 ```bash
 python -m venv .venv
@@ -98,7 +98,7 @@ The pipeline writes `data/output/skypoints_demo.db` and prints a processing summ
 ## Repository layout
 
 ```text
-skypoints-etl-revised/
+skypoints-etl/
 ├── data/
 │   ├── input/
 │   │   ├── USA.csv
