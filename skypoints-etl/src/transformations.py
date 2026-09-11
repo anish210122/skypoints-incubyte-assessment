@@ -56,12 +56,15 @@ def parse_flexible_date(value: Any) -> str | None:
 
 
 def compute_age(dob_iso: str | None, ref_date: date | None = None) -> int | None:
-    if not dob_iso:
+    if dob_iso is None or pd.isna(dob_iso):
+        return None
+    raw = str(dob_iso).strip()
+    if not raw or raw.upper() in {"NAT", "NONE", "NULL", "NAN"}:
         return None
     ref_date = ref_date or date.today()
     try:
-        born = datetime.strptime(dob_iso, "%Y-%m-%d").date()
-    except ValueError:
+        born = datetime.strptime(raw, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
         return None
     return ref_date.year - born.year - (
         (ref_date.month, ref_date.day) < (born.month, born.day)
@@ -78,12 +81,15 @@ def compute_stale_flag(
     staleness when a flight date is present. This makes the missing-data state
     explicit rather than conflating it with stale.
     """
-    if not flight_date_iso:
+    if flight_date_iso is None or pd.isna(flight_date_iso):
+        return None
+    raw = str(flight_date_iso).strip()
+    if not raw or raw.upper() in {"NAT", "NONE", "NULL", "NAN"}:
         return None
     ref_date = ref_date or date.today()
     try:
-        flight_date = datetime.strptime(flight_date_iso, "%Y-%m-%d").date()
-    except ValueError:
+        flight_date = datetime.strptime(raw, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
         return None
     return int((ref_date - flight_date).days > 90)
 
