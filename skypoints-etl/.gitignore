@@ -8,3 +8,4 @@ data/output/*
 *.egg-info/
 build/
 dist/
+data/output/
