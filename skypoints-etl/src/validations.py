@@ -7,14 +7,28 @@ import pandas as pd
 from .transformations import VALID_ACTIVE_FLAGS, VALID_COUNTRIES, VALID_TIERS
 
 
+def _is_missing(value) -> bool:
+    """Return True for None, NaN/NaT, or blank-like strings."""
+    if value is None:
+        return True
+    try:
+        if pd.isna(value):
+            return True
+    except (TypeError, ValueError):
+        pass
+    if isinstance(value, str) and value.strip().upper() in {"", "NAN", "NAT", "NONE", "NULL"}:
+        return True
+    return False
+
+
 def validate_member_row(row: pd.Series, ref_date: date) -> list[str]:
     errors: list[str] = []
 
-    if not row.get("member_id"):
+    if _is_missing(row.get("member_id")):
         errors.append("MISSING_MEMBER_ID")
-    if not row.get("member_name"):
+    if _is_missing(row.get("member_name")):
         errors.append("MISSING_MEMBER_NAME")
-    if not row.get("enrollment_date"):
+    if _is_missing(row.get("enrollment_date")):
         errors.append("INVALID_OR_MISSING_ENROLLMENT_DATE")
 
     if row.get("country") not in VALID_COUNTRIES:
