@@ -133,16 +133,5 @@ AI was used as an engineering accelerator for code review, test-case brainstormi
 
 The production SQL is written to tolerate reprocessing: member staging uses `MERGE` at `source_file + source_row_number` grain, redemption facts use `MERGE` on `txn_id`, reject rows are protected against duplicate insertion, and the country tables are rebuilt from the deterministic current-state result. In a real deployment I would also track a load/batch ID plus file checksum in an audit table and skip files already marked successful.
 
-## Suggested incremental commit sequence
 
-Do not upload this as one giant commit. A transparent sequence would be:
-
-```text
-1. refactor: ingest actual USA IND AUS source files
-2. feat: add raw landing and normalized staging layers
-3. feat: add quarantine and data quality checks
-4. feat: implement deterministic latest-record-wins routing
-5. feat: flatten redemption JSON and analytical join
-6. test: expand transformation and validation coverage
-7. docs: add Snowflake architecture scaling and assumptions
 ```
